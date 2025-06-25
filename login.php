@@ -7,10 +7,14 @@ if (!$conn) {
 if(isset($_POST['submit'])){
     $username = $_POST['email'] ;
     $password = $_POST['password'] ;
-    $sql = "SELECT * FROM users WHERE email='$username' AND password='$password'";
+    $inactive = $row['inactive'];
+    $sql = "SELECT * FROM users WHERE email='$username' AND password='$password' AND inactive=0";
    $rezultat = mysqli_query($conn, $sql);
    $row = mysqli_fetch_array($rezultat, MYSQLI_ASSOC);
    $count = mysqli_num_rows($rezultat);
+$active = $row['inactive'];
+
+
     if($count == 1) {
         header("Location: welcome.php");  
     }
