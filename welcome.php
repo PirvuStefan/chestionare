@@ -17,6 +17,11 @@ include('connection.php');
  $chestionare_completate = $row['count'] ?? 0; // in cazul in care nu exista chestionare, setam la 0
  $chestionare_completate = 2;
 
+ $sql1 = "SELECT COUNT(*) as count FROM user_questionnaires WHERE user_id='$userID' AND answered_correct = 10";
+$result1 = mysqli_query($conn, $sql1);
+$row1 = mysqli_fetch_assoc($result1);
+$chestionare_perfecte = $row1['count'] ?? 0; // in cazul in care nu exista chestionare perfecte, setam la 0
+
 
 ?>
     
@@ -30,19 +35,47 @@ include('connection.php');
     <title>Document</title>
 </head>
 <body>
-    <h1>Bine ati venit!</h1>
+    
     <div class="card">
         <div class="bg"></div>
         <div class="blob"></div>
         <div class="card-content">
-            <div class ="modern-text"><?php echo $chestionare_completate ?? 0; ?>
-            
-            Chestionare Completate</div>
-            <div >In total ati completat <?php echo $chestionare_completate ?? 0; ?>  chestionare.</div>
+            <div class="modern-text"><?php echo $chestionare_completate ?? 0; ?></div>
+            <style>
+                .modern-text1 {
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 1.2em;
+                    color: #333;
+                    text-align: center;
+                    margin-top: 10px;
+                    font-weight: 500;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                }
+                .subtitle {
+                    font-family: 'Roboto', sans-serif;
+                    font-size: 1.2em;
+                    color: #333 !important; /* Force dark color with !important */
+                    margin-top: 15px;
+                    letter-spacing: 0.5px;
+                    line-height: 1.4;
+                    font-weight: 300;
+                }
+            </style>
+            <div class="modern-text1">Chestionare Completate</div>
+            <div class="subtitle">In total ati completat <?php echo $chestionare_completate ?? 0; ?>  chestionare.</div>
             
             
         </div>
     </div>
+
+    <div class="card2">
+    <div class="bg2"></div>
+    <div class="blob2"></div>
+    </div>
+
+    <div class="card3"></div>
+
     
    
     
