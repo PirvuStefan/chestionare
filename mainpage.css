@@ -64,14 +64,16 @@
   }
 }
 
-.modern-text {
-    color: #4d4343; /* Black text */
-    font-family: Roboto; /* Modern, readable fonts */
-    font-size: 3rem; /* Base readable size */
-    line-height: 1.6; /* Good spacing for readability */
-    font-weight: 400; /* Normal weight for clarity */
-    letter-spacing: 0.5px; /* Slight spacing for modern feel */
-    margin: 50px 0 1rem -150px; /* Top and left spacing for moving text down and to the left */
+.modern-text{
+   
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 10; /* Ensures text appears above bg and blob */
+    color: white; /* Or whatever color works with your background */
+    font-size: 1.2em;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     
 }
 
@@ -102,3 +104,9 @@
     color: rgb(128, 26, 26);
     cursor: pointer;
 }
+
+
+
+
+
+   

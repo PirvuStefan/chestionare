@@ -11,10 +11,11 @@ include('connection.php');
 
 
 
- $sql = "SELECT COUNT(*) as count FROM user_questionnaires WHERE user_id='$userID'";
+ $sql = "SELECT COUNT(*) as count FROM user_questionnaires WHERE user_id='$userID' AND (answered_correct + answered_incorrect) > 9";
  $result = mysqli_query($conn, $sql);
  $row = mysqli_fetch_assoc($result);
  $chestionare_completate = $row['count'] ?? 0; // in cazul in care nu exista chestionare, setam la 0
+ $chestionare_completate = 2;
 
 
 ?>
@@ -34,10 +35,12 @@ include('connection.php');
         <div class="bg"></div>
         <div class="blob"></div>
         <div class="card-content">
-            <div class="modern-text"><?php echo $chestionare_completate ?? 0; ?></div>
-            <h3>Card Title</h3>
-            <p>This is some descriptive text inside the card. You can add any content you want here.</p>
-            <button>Action Button</button>
+            <div class ="modern-text"><?php echo $chestionare_completate ?? 0; ?>
+            
+            Chestionare Completate</div>
+            <div >In total ati completat <?php echo $chestionare_completate ?? 0; ?>  chestionare.</div>
+            
+            
         </div>
     </div>
     
