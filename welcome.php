@@ -1,13 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-session_start();
-$userID = $_SESSION['user_id'] ?? null;
-if ($userID) {
-    echo "User ID is: " . $userID;
-} else {
-    echo "No user ID found in session";
-}
+
 
 $count = 0;
 //if ($userID) {
