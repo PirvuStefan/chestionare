@@ -1,39 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
+session_start();
+include('connection.php');
 
 
-$count = 0;
-//if ($userID) {
-    // Create a new MySQL connection
-   // $conn = new mysqli("localhost", "root", "", "user_questionnaires", 3306);
-    
-    // Check if connection was successful
-   // if ($conn->connect_error) {
-   //     die("Connection failed: " . $conn->connect_error);
-   // }
-    
-    // Prepare SQL statement to count questionnaires for the user
-   // $stmt = $conn->prepare("SELECT COUNT(*) FROM user_questionnaires WHERE user_id = ?");
-    
-    // Bind the user ID parameter
-   // $stmt->bind_param("i", $userID);
-    
-    // Execute the prepared statement
-   // $stmt->execute();
-    
-    // Bind the result to $count variable
-  //  $stmt->bind_result($count);
-    
-    // Fetch the result
-    //$stmt->fetch();
-    
-    // Close the prepared statement
-   // $stmt->close();
- 
-    // Close the database connection
-   // $conn->close();
-//}
+
+ $userID = $_SESSION['userID'] ?? null;
+ echo $userID;
+
+
+
+ $sql = "SELECT COUNT(*) as count FROM user_questionnaires WHERE user_id='$userID'";
+ $result = mysqli_query($conn, $sql);
+ $row = mysqli_fetch_assoc($result);
+ $chestionare_completate = $row['count'] ?? 0; // in cazul in care nu exista chestionare, setam la 0
+
+
 ?>
     
 <head>
@@ -51,7 +34,7 @@ $count = 0;
         <div class="bg"></div>
         <div class="blob"></div>
         <div class="card-content">
-            <div class="modern-text">11</div>
+            <div class="modern-text"><?php echo $chestionare_completate ?? 0; ?></div>
             <h3>Card Title</h3>
             <p>This is some descriptive text inside the card. You can add any content you want here.</p>
             <button>Action Button</button>

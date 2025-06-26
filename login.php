@@ -7,20 +7,23 @@ if (!$conn) {
 if(isset($_POST['submit'])){
     $username = $_POST['email'] ;
     $password = $_POST['password'] ;
-    $inactive = $row['inactive'];
+
     
     
     $sql = "SELECT * FROM users WHERE email='$username' AND password='$password' AND inactive=0"; // verficicam daca utilizatorul este inactiv
    $rezultat = mysqli_query($conn, $sql);
    $row = mysqli_fetch_array($rezultat, MYSQLI_ASSOC);
    $count = mysqli_num_rows($rezultat);
-  
-
+   
+    $userID = $row['id'];
+    $_SESSION['userID'] = $userID;
    
     
 
     if($count == 1) {
-        
+        ///echo $userID;
+        session_start();
+        $_SESSION['userID'] = $userID;
         header("Location: welcome.php");  
     }
     else {
