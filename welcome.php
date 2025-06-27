@@ -6,6 +6,8 @@ include('connection.php');
 
 
 
+
+
  $userID = $_SESSION['userID'] ?? null;
  echo $userID;
 
