@@ -11,7 +11,7 @@ if(isset($_POST['submit'])){
     $password = $_POST['password'];
 
     // Only select needed fields
-    $stmt = $conn->prepare("SELECT id, password FROM users WHERE email=?");
+    $stmt = $conn->prepare("SELECT id, password FROM users WHERE email=? AND inactive=0"); // in caz ca avem un cont inactiv, nu ne putem conecta 
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
