@@ -4,12 +4,38 @@
 session_start();
 include('connection.php');
 
+function initialise_user($coockie_now){
+    global $conn;
+    $sql = "SELECT user_id FROM remember_tokens_web WHERE token = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $coockie_now);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
+    if ($row = mysqli_fetch_assoc($result)) {
+        return $row['user_id'];
+    }
+    return null;
+}
 
 
 
  $userID = $_SESSION['userID'] ?? null;
  echo $userID;
+ $coockie_now = $_COOKIE['remember_token'] ?? null;
+ if(!$coockie_now) {
+     header("Location: index.php");
+     exit();
+ }
+
+ $userID = initialise_user($coockie_now);
+
+ if( !$userID) {
+     header("Location: index.php");
+     exit();
+ }
+
+ $_SESSION['userID'] = $userID; // salvam userID in sesiune pentru a fi folosit in alte pagini  
 
 
 
