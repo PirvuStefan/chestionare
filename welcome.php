@@ -15,7 +15,7 @@ include('connection.php');
  $result = mysqli_query($conn, $sql);
  $row = mysqli_fetch_assoc($result);
  $chestionare_completate = $row['count'] ?? 0; // in cazul in care nu exista chestionare, setam la 0
- $chestionare_completate = 2;
+
 
  $sql1 = "SELECT COUNT(*) as count FROM user_questionnaires WHERE user_id='$userID' AND answered_correct = 10";
 $result1 = mysqli_query($conn, $sql1);
@@ -72,6 +72,16 @@ $chestionare_perfecte = $row1['count'] ?? 0; // in cazul in care nu exista chest
     <div class="card2">
     <div class="bg2"></div>
     <div class="blob2"></div>
+    <div class=card-content>
+    
+    <div class="modern-text"><?php echo $chestionare_perfecte ?? 0; ?></div>
+    <div class ="modern-text1">Chestionare Perfecte</div>
+    <div class="subtitle">In total ati completat <?php echo $chestionare_perfecte ?? 0; ?> chestionare perfect.</div>
+            
+
+    </div>
+
+
     </div>
 
     <div class="card3"></div>
