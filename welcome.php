@@ -18,10 +18,24 @@ function initialise_user($coockie_now){
     return null;
 }
 
+function get_name($userID) {
+    global $conn;
+    $sql = "SELECT name FROM users WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $userID);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
 
+    if ($row = mysqli_fetch_assoc($result)) {
+        // Split the name and return only the first part
+        $nameParts = explode(' ', $row['name']);
+        return $nameParts[0];
+    }
+    return null;
+}
 
  $userID = $_SESSION['userID'] ?? null;
- echo $userID;
+ //echo $userID;
  $coockie_now = $_COOKIE['remember_token'] ?? null;
  if(!$coockie_now) {
      header("Location: index.php");
@@ -50,6 +64,7 @@ $result1 = mysqli_query($conn, $sql1);
 $row1 = mysqli_fetch_assoc($result1);
 $chestionare_perfecte = $row1['count'] ?? 0; // in cazul in care nu exista chestionare perfecte, setam la 0
 
+$name = get_name($userID);
 
 ?>
     
@@ -63,6 +78,7 @@ $chestionare_perfecte = $row1['count'] ?? 0; // in cazul in care nu exista chest
     <title>Document</title>
 </head>
 <body>
+    
     
     <div class="card">
         <div class="bg"></div>
@@ -96,6 +112,8 @@ $chestionare_perfecte = $row1['count'] ?? 0; // in cazul in care nu exista chest
             
         </div>
     </div>
+    <div class="floating-text">Salut, <?php echo $name ?>! Bine te am regasit! 👋️</div>
+
 
     <div class="card2">
     <div class="bg2"></div>
@@ -112,7 +130,11 @@ $chestionare_perfecte = $row1['count'] ?? 0; // in cazul in care nu exista chest
 
     </div>
 
-    <div class="card3"></div>
+    <div class="card3">
+                <div class=modern-text1>Încă un chestionar și devii expert!</div>
+                <div class="subtitle">Ce zici, mai încerci unul? 🧠</div>  
+                <button class="button">Incepe</button>
+    </div>
 
     
    
