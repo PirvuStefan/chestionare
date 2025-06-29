@@ -284,6 +284,33 @@
 }
 
 
+    .profile-button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: white;
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35); /* Black shadow */
+      text-decoration: none;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .profile-button:hover {
+      background: #eef1f7;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); /* Darker shadow on hover */
+    }
+
+    .profile-button svg {
+      width: 28px;
+      height: 28px;
+      fill: #4a67ff;
+    }
+
+
+
+
 
 
 

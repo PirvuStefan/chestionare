@@ -137,6 +137,14 @@ $name = get_name($userID);
     </div>
 
     
+
+     <a href="account-details.php" class="profile-button" title="Account Details">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>
+    </svg>
+  </a>
+
+    
    
     
 </body>

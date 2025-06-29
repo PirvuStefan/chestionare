@@ -1,0 +1,62 @@
+<?php
+session_start();
+include('connection.php');
+
+// Get user ID from session
+$userID = $_SESSION['userID'] ?? null;
+
+if (!$userID) {
+    header("Location: index.php");
+    exit();
+}
+
+// Get user information
+function get_user_details($userID) {
+    global $conn;
+    $sql = "SELECT name, email FROM users WHERE id = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $userID);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    
+    if ($row = mysqli_fetch_assoc($result)) {
+        return $row;
+    }
+    return null;
+}
+
+$user_details = get_user_details($userID);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Details</title>
+    <link rel="stylesheet" href="mainpage.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="card">
+        <div class="bg"></div>
+        <div class="blob"></div>
+        <div class="card-content">
+            <h1>Account Details</h1>
+            <?php if ($user_details): ?>
+                <div class="modern-text1">Name: <?php echo htmlspecialchars($user_details['name']); ?></div>
+                <div class="subtitle">Email: <?php echo htmlspecialchars($user_details['email']); ?></div>
+                <div class="subtitle">User ID: <?php echo $userID; ?></div>
+            <?php else: ?>
+                <div class="subtitle">User details not found.</div>
+            <?php endif; ?>
+            
+            <a href="welcome.php" class="button" style="margin-top: 20px; display: inline-block; text-decoration: none;">
+                Back to Dashboard
+            </a>
+        </div>
+    </div>
+</body>
+</html>
