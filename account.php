@@ -13,7 +13,7 @@ if (!$userID) {
 // Get user information
 function get_user_details($userID) {
     global $conn;
-    $sql = "SELECT name, email FROM users WHERE id = ?";
+    $sql = "SELECT name, email, employee_mark FROM users WHERE id = ?";  // Added employee_mark
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "i", $userID);
     mysqli_stmt_execute($stmt);
@@ -26,7 +26,23 @@ function get_user_details($userID) {
 }
 
 $user_details = get_user_details($userID);
+$employee_mark = $user_details['employee_mark'] ?? null;
 
+function get_user_employment_date($employee_mark) {
+    global $conn;
+    $sql = "SELECT employed_at FROM employees WHERE mark = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $employee_mark);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    
+    if ($row = mysqli_fetch_assoc($result)) {
+        return $row['employed_at'];
+    }
+    return null;
+}
+
+$date_employed = get_user_employment_date($employee_mark);
 
 ?>
 
@@ -65,7 +81,7 @@ $user_details = get_user_details($userID);
 
     <h1><?php echo $user_details['name']?></h1>
     <p><?php echo $user_details['email']?></p>
-    <p>Angajat Robest din March 2019</p>
+    <p>Angajat Robest din <?php echo $date_employed ?></p>
   </div>
 
 </body>
