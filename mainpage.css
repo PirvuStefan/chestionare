@@ -294,7 +294,7 @@
       background: white;
       box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35); /* Black shadow */
       text-decoration: none;
-      transition: background 0.3s ease, box-shadow 0.3s ease;
+      transition: 0.3s ease, box-shadow 0.3s ease;
     }
 
     .profile-button:hover {
