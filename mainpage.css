@@ -198,6 +198,7 @@
   cursor: pointer;
   background-color: #0077ff;
   transition: all 0.2s ease;
+  top:25px;
 }
 
 .button:active {
@@ -295,6 +296,9 @@
       box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35); /* Black shadow */
       text-decoration: none;
       transition: 0.3s ease, box-shadow 0.3s ease;
+      position: fixed;
+      top: 10px;
+      right: 10px;
     }
 
     .profile-button:hover {

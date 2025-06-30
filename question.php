@@ -1,5 +1,97 @@
 <?php
+
+
+session_start();
 include('connection.php');
+
+
+function get_random_questionnaire() {
+    global $conn;
+    
+   
+    $count_query = "SELECT COUNT(DISTINCT user_questionnaire_id) as total FROM user_questionnaire_questions";
+    $count_result = mysqli_query($conn, $count_query);
+    
+    if (!$count_result) {
+        return null;
+    }
+    
+    $count_row = mysqli_fetch_assoc($count_result);
+    $total = $count_row['total'];
+    
+    if ($total == 0) {
+        return null;
+    }
+    
+  
+    $random_offset = rand(0, $total - 1);
+    
+    
+    $query = "SELECT DISTINCT user_questionnaire_id FROM user_questionnaire_questions LIMIT 1 OFFSET $random_offset";
+    $result = mysqli_query($conn, $query);
+    
+    if ($result && mysqli_num_rows($result) > 0) {
+        $row = mysqli_fetch_assoc($result);
+        return $row['user_questionnaire_id'];
+    }
+    
+    return null;
+}
+
+function initialise_questionnaire(){
+  
+  $questionnaire = new Questionnaire(get_random_questionnaire());
+  
+  if ($questionnaire->id === null) {
+      return null; // gol
+  }
+  global $conn;
+  // Get all question IDs for the selected questionnaire
+  $query = "SELECT question_id FROM user_questionnaire_questions WHERE user_questionnaire_id = {$questionnaire->id} LIMIT 10";
+  $result = mysqli_query($conn, $query);
+
+  if ($result) {
+    while ($row = mysqli_fetch_assoc($result)) {
+      $question = new Question($row['question_id']);
+      $questionnaire->add_question($question);
+    }
+  }
+  
+  return $questionnaire;
+}
+
+
+
+
+class Questionnaire {
+    public $id;
+    public array $questions = []; 
+
+    public function __construct($id) {
+        $this->id = $id;
+    }
+
+    public function add_question(Question $question) {
+        $this->questions[] = $question;
+    }
+}
+
+class Question {
+    
+    public int $id;
+        public string $description;
+    public string $answers1;
+    public string $answers2;   
+    public string $answers3;
+    public bool $answers1_correct;
+    public bool $answers2_correct;
+    public bool $answers3_correct;
+
+    public function __construct(int $id){
+      $this->id = $id;
+    }
+}// firecare intrebare are un id, o descriere si 3 raspunsuri, fiecare cu un camp de corectitudine
+
 ?>
 
 
