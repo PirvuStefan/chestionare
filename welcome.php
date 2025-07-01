@@ -133,7 +133,7 @@ $name = get_name($userID);
     <div class="card3">
                 <div class=modern-text1>Încă un chestionar și devii expert!</div>
                 <div class="subtitle">Ce zici, mai încerci unul? 🧠</div>  
-                <button class="button">Incepe</button>
+                <a href="question.php"><button class="button">Incepe</button></a>
     </div>
 
     
