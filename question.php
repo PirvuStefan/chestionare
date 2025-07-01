@@ -50,9 +50,32 @@ function initialise_questionnaire(){
   $query = "SELECT question_id FROM user_questionnaire_questions WHERE user_questionnaire_id = {$questionnaire->id} LIMIT 10";
   $result = mysqli_query($conn, $query);
 
+
+
   if ($result) {
     while ($row = mysqli_fetch_assoc($result)) {
       $question = new Question($row['question_id']);
+      
+      $description_query = "SELECT description FROM questions WHERE id = {$question->id}";
+      $description_result = mysqli_query($conn, $description_query);
+      if ($description_result && $row = mysqli_fetch_assoc($description_result)) {
+        $question->description = $row['description'];
+      }
+
+      // Get answers and their correctness for the current question
+      $answers_query = "SELECT description, is_correct FROM questions_answers WHERE question_id = {$question->id} ORDER BY id LIMIT 3";
+      $answers_result = mysqli_query($conn, $answers_query);
+      if ($answers_result) {
+        $i = 1;
+        while ($answer_row = mysqli_fetch_assoc($answers_result)) {
+          $answer_field = "answers" . $i;
+          $correct_field = "answers" . $i . "_correct";
+          $question->$answer_field = $answer_row['description'];
+          $question->$correct_field = (bool)$answer_row['is_correct'];
+          $i++;
+        }
+      }
+
       $questionnaire->add_question($question);
     }
   }
@@ -91,6 +114,8 @@ class Question {
       $this->id = $id;
     }
 }// firecare intrebare are un id, o descriere si 3 raspunsuri, fiecare cu un camp de corectitudine
+
+$chestionar = initialise_questionnaire();
 
 ?>
 
@@ -151,6 +176,7 @@ class Question {
 
     .question label {
       display: block;
+      user-select : none;
       padding: 0.5rem;
       margin: 0.3rem 0;
       border-radius: 12px;
@@ -206,7 +232,7 @@ class Question {
     <form id="quizForm">
       <!-- Example of one question block -->
       <div class="question">
-        <p>1. Which colors do you like?</p>
+        <p>1. <?php echo $chestionar->questions[0]->description; ?></p>
         <input type="checkbox" id="q1a" name="q1" value="Red" hidden>
         <label for="q1a">Red</label>
         <input type="checkbox" id="q1b" name="q1" value="Blue" hidden>
@@ -216,7 +242,7 @@ class Question {
       </div>
 
       <div class="question">
-        <p>2. Select your favorite seasons:</p>
+        <p>2. <?php echo $chestionar->questions[1]->description ?></p>
         <input type="checkbox" id="q2a" name="q2" value="Spring" hidden>
         <label for="q2a">Spring</label>
         <input type="checkbox" id="q2b" name="q2" value="Summer" hidden>
@@ -226,7 +252,7 @@ class Question {
       </div>
 
       <div class="question">
-        <p>3. Pets you would like to have:</p>
+        <p>3. <?php echo $chestionar->questions[2]->description ?></p>
         <input type="checkbox" id="q3a" name="q3" value="Dog" hidden>
         <label for="q3a">Dog</label>
         <input type="checkbox" id="q3b" name="q3" value="Cat" hidden>
@@ -236,7 +262,7 @@ class Question {
       </div>
 
       <div class="question">
-        <p>4. Favorite music genres:</p>
+        <p>4. <?php echo $chestionar->questions[3]->description ?></p>
         <input type="checkbox" id="q4a" name="q4" value="Pop" hidden>
         <label for="q4a">Pop</label>
         <input type="checkbox" id="q4b" name="q4" value="Rock" hidden>
@@ -246,7 +272,7 @@ class Question {
       </div>
 
       <div class="question">
-        <p>5. When are you most productive?</p>
+        <p>5. <?php echo $chestionar->questions[4]->description ?></p>
         <input type="checkbox" id="q5a" name="q5" value="Morning" hidden>
         <label for="q5a">Morning</label>
         <input type="checkbox" id="q5b" name="q5" value="Evening" hidden>
@@ -256,7 +282,7 @@ class Question {
       </div>
 
       <div class="question">
-        <p>6. Favorite drinks:</p>
+        <p>6. <?php echo $chestionar->questions[5]->description ?></p>
         <input type="checkbox" id="q6a" name="q6" value="Tea" hidden>
         <label for="q6a">Tea</label>
         <input type="checkbox" id="q6b" name="q6" value="Coffee" hidden>
@@ -266,7 +292,7 @@ class Question {
       </div>
 
       <div class="question">
-        <p>7. Travel preferences:</p>
+        <p>7. <?php echo $chestionar->questions[6]->description ?></p>
         <input type="checkbox" id="q7a" name="q7" value="Car" hidden>
         <label for="q7a">Car</label>
         <input type="checkbox" id="q7b" name="q7" value="Plane" hidden>
@@ -276,7 +302,7 @@ class Question {
       </div>
 
       <div class="question">
-        <p>8. Devices you use:</p>
+        <p>8. <?php echo $chestionar->questions[7]->description ?></p>
         <input type="checkbox" id="q8a" name="q8" value="Phone" hidden>
         <label for="q8a">Phone</label>
         <input type="checkbox" id="q8b" name="q8" value="Tablet" hidden>
@@ -286,7 +312,7 @@ class Question {
       </div>
 
       <div class="question">
-        <p>9. Favorite cuisines:</p>
+        <p>9. <?php echo $chestionar->questions[8]->description ?></p>
         <input type="checkbox" id="q9a" name="q9" value="Italian" hidden>
         <label for="q9a">Italian</label>
         <input type="checkbox" id="q9b" name="q9" value="Chinese" hidden>
@@ -296,7 +322,7 @@ class Question {
       </div>
 
       <div class="question">
-        <p>10. Languages you're learning:</p>
+        <p>10. <?php echo $chestionar->questions[9]->description ?></p>
         <input type="checkbox" id="q10a" name="q10" value="English" hidden>
         <label for="q10a">English</label>
         <input type="checkbox" id="q10b" name="q10" value="Spanish" hidden>
