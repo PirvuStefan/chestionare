@@ -234,101 +234,101 @@ $chestionar = initialise_questionnaire();
       <div class="question">
         <p>1. <?php echo $chestionar->questions[0]->description; ?></p>
         <input type="checkbox" id="q1a" name="q1" value="Red" hidden>
-        <label for="q1a">Red</label>
+        <label for="q1a"><?php echo $chestionar->questions[0]->answers1 ?></label>
         <input type="checkbox" id="q1b" name="q1" value="Blue" hidden>
-        <label for="q1b">Blue</label>
+        <label for="q1b"><?php echo $chestionar->questions[0]->answers2 ?></label>
         <input type="checkbox" id="q1c" name="q1" value="Green" hidden>
-        <label for="q1c">Green</label>
+        <label for="q1c"><?php echo $chestionar->questions[0]->answers3 ?></label>
       </div>
 
       <div class="question">
         <p>2. <?php echo $chestionar->questions[1]->description ?></p>
         <input type="checkbox" id="q2a" name="q2" value="Spring" hidden>
-        <label for="q2a">Spring</label>
+        <label for="q2a"><?php echo $chestionar->questions[1]->answers1 ?></label>
         <input type="checkbox" id="q2b" name="q2" value="Summer" hidden>
-        <label for="q2b">Summer</label>
+        <label for="q2b"><?php echo $chestionar->questions[1]->answers2 ?></label>
         <input type="checkbox" id="q2c" name="q2" value="Winter" hidden>
-        <label for="q2c">Winter</label>
+        <label for="q2c"><?php echo $chestionar->questions[1]->answers3 ?></label>
       </div>
 
       <div class="question">
         <p>3. <?php echo $chestionar->questions[2]->description ?></p>
         <input type="checkbox" id="q3a" name="q3" value="Dog" hidden>
-        <label for="q3a">Dog</label>
+        <label for="q3a"><?php echo $chestionar->questions[2]->answers1 ?></label>
         <input type="checkbox" id="q3b" name="q3" value="Cat" hidden>
-        <label for="q3b">Cat</label>
+        <label for="q3b"><?php echo $chestionar->questions[2]->answers2 ?></label>
         <input type="checkbox" id="q3c" name="q3" value="Parrot" hidden>
-        <label for="q3c">Parrot</label>
+        <label for="q3c"><?php echo $chestionar->questions[2]->answers3 ?></label>
       </div>
 
       <div class="question">
         <p>4. <?php echo $chestionar->questions[3]->description ?></p>
         <input type="checkbox" id="q4a" name="q4" value="Pop" hidden>
-        <label for="q4a">Pop</label>
+        <label for="q4a"><?php echo $chestionar->questions[3]->answers1 ?></label>
         <input type="checkbox" id="q4b" name="q4" value="Rock" hidden>
-        <label for="q4b">Rock</label>
+        <label for="q4b"><?php echo $chestionar->questions[3]->answers2 ?></label>
         <input type="checkbox" id="q4c" name="q4" value="Jazz" hidden>
-        <label for="q4c">Jazz</label>
+        <label for="q4c"><?php echo $chestionar->questions[3]->answers2 ?></label>
       </div>
 
       <div class="question">
         <p>5. <?php echo $chestionar->questions[4]->description ?></p>
         <input type="checkbox" id="q5a" name="q5" value="Morning" hidden>
-        <label for="q5a">Morning</label>
+        <label for="q5a"><?php echo $chestionar->questions[4]->answers1 ?></label>
         <input type="checkbox" id="q5b" name="q5" value="Evening" hidden>
-        <label for="q5b">Evening</label>
+        <label for="q5b"><?php echo $chestionar->questions[4]->answers2 ?></label>
         <input type="checkbox" id="q5c" name="q5" value="Night" hidden>
-        <label for="q5c">Night</label>
+        <label for="q5c"><?php echo $chestionar->questions[4]->answers3 ?></label>
       </div>
 
       <div class="question">
         <p>6. <?php echo $chestionar->questions[5]->description ?></p>
         <input type="checkbox" id="q6a" name="q6" value="Tea" hidden>
-        <label for="q6a">Tea</label>
+        <label for="q6a"><?php echo $chestionar->questions[5]->answers1 ?></label>
         <input type="checkbox" id="q6b" name="q6" value="Coffee" hidden>
-        <label for="q6b">Coffee</label>
+        <label for="q6b"><?php echo $chestionar->questions[5]->answers2 ?></label>
         <input type="checkbox" id="q6c" name="q6" value="Juice" hidden>
-        <label for="q6c">Juice</label>
+        <label for="q6c"><?php echo $chestionar->questions[5]->answers3 ?></label>
       </div>
 
       <div class="question">
         <p>7. <?php echo $chestionar->questions[6]->description ?></p>
         <input type="checkbox" id="q7a" name="q7" value="Car" hidden>
-        <label for="q7a">Car</label>
+        <label for="q7a"><?php echo $chestionar->questions[6]->answers1 ?></label>
         <input type="checkbox" id="q7b" name="q7" value="Plane" hidden>
-        <label for="q7b">Plane</label>
+        <label for="q7b"><?php echo $chestionar->questions[6]->answers2 ?></label>
         <input type="checkbox" id="q7c" name="q7" value="Train" hidden>
-        <label for="q7c">Train</label>
+        <label for="q7c"><?php echo $chestionar->questions[6]->answers3 ?></label>
       </div>
 
       <div class="question">
         <p>8. <?php echo $chestionar->questions[7]->description ?></p>
         <input type="checkbox" id="q8a" name="q8" value="Phone" hidden>
-        <label for="q8a">Phone</label>
+        <label for="q8a"><?php echo $chestionar->questions[7]->answers1 ?></label>
         <input type="checkbox" id="q8b" name="q8" value="Tablet" hidden>
-        <label for="q8b">Tablet</label>
+        <label for="q8b"><?php echo $chestionar->questions[7]->answers2 ?></label>
         <input type="checkbox" id="q8c" name="q8" value="Laptop" hidden>
-        <label for="q8c">Laptop</label>
+        <label for="q8c"><?php echo $chestionar->questions[7]->answers3 ?></label>
       </div>
 
       <div class="question">
         <p>9. <?php echo $chestionar->questions[8]->description ?></p>
         <input type="checkbox" id="q9a" name="q9" value="Italian" hidden>
-        <label for="q9a">Italian</label>
+        <label for="q9a"><?php echo $chestionar->questions[8]->answers1 ?></label>
         <input type="checkbox" id="q9b" name="q9" value="Chinese" hidden>
-        <label for="q9b">Chinese</label>
+        <label for="q9b"><?php echo $chestionar->questions[8]->answers2 ?></label>
         <input type="checkbox" id="q9c" name="q9" value="Indian" hidden>
-        <label for="q9c">Indian</label>
+        <label for="q9c"><?php echo $chestionar->questions[8]->answers3 ?></label>
       </div>
 
       <div class="question">
         <p>10. <?php echo $chestionar->questions[9]->description ?></p>
         <input type="checkbox" id="q10a" name="q10" value="English" hidden>
-        <label for="q10a">English</label>
+        <label for="q10a"><?php echo $chestionar->questions[9]->answers1 ?></label>
         <input type="checkbox" id="q10b" name="q10" value="Spanish" hidden>
-        <label for="q10b">Spanish</label>
+        <label for="q10b"><?php echo $chestionar->questions[9]->answers2 ?></label>
         <input type="checkbox" id="q10c" name="q10" value="Japanese" hidden>
-        <label for="q10c">Japanese</label>
+        <label for="q10c"><?php echo $chestionar->questions[9]->answers3 ?></label>
       </div>
 
       <button type="submit">Submit</button>
