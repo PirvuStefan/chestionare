@@ -210,6 +210,7 @@ $_SESSION['chestionar'] = $chestionar;
 
     button {
       background: #007bff;
+      user-select: none;
       color: white;
       border: none;
       padding: 0.8rem 1.5rem;
