@@ -162,6 +162,15 @@ function check($check, $rasp){
   return 'should';
 }
 
+function valid($a,$b,$c,$x,$y,$z){
+  // a,b,c sunt raspunsurile date de utilizator, x,y,z sunt raspunsurile corecte
+  if($a == $x and $b == $y and $c == $z)
+  return 1;
+  return 0;
+}
+
+$count = 0;
+
 
 
 
@@ -327,7 +336,7 @@ function check($check, $rasp){
 </head>
 <body>
   <div class="container">
-    <h1>Rezultate Chestionar #<?php echo $chestionar->id; ?></h1>
+    <h1>Rezultate Chestionar #<?php  echo " "; echo $count  ?></h1>
     
     <?php for ($i = 0; $i < count($chestionar->questions); $i++): ?>
       <?php 
@@ -352,8 +361,13 @@ function check($check, $rasp){
         <div class="answer-option <?php echo check($raspuns[$i]->answer3, $question->answers3_correct) ?>">
           <?php echo htmlspecialchars($question->answers3); ?>
         </div>
+
+        <?php  $count = $count + valid($raspuns[$i]->answer1,$raspuns[$i]->answer2,$raspuns[$i]->answer3,$question->answers1_correct,$question->answers2_correct,$question->answers3_correct)?>
       </div>
+      
     <?php endfor; ?>
+    <h2>Scorul final: <?php echo $count ?> / 10</h2>
+    <h3><?php if($count == 10) echo "Felicitari!Ai rezolvat perfect acest chestionar! ☺️"; ?> </h3>
 
     <div class="navigation-buttons">
       <a href="question.php" class="btn secondary">Încearcă din nou</a>
