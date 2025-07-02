@@ -339,17 +339,17 @@ function check($check, $rasp){
         <p><?php echo $question_num; ?>. <?php echo htmlspecialchars($question->description); ?></p>
         
         <!-- Answer 1 -->
-        <div class="answer-option <?php echo $question->answers1_correct ? 'correct' : 'should'; ?>">
+        <div class="answer-option <?php echo check($raspuns[$i]->answer1, $question->answers1_correct) ?>">
           <?php echo htmlspecialchars($question->answers1); ?>
         </div>
         
         <!-- Answer 2 -->
-        <div class="answer-option <?php echo $question->answers2_correct ? 'correct' : 'neutral'; ?>">
+        <div class="answer-option <?php echo check($raspuns[$i]->answer2, $question->answers2_correct) ?>">
           <?php echo htmlspecialchars($question->answers2); ?>
         </div>
         
         <!-- Answer 3 -->
-        <div class="answer-option <?php echo $question->answers3_correct ? 'correct' : 'neutral'; ?>">
+        <div class="answer-option <?php echo check($raspuns[$i]->answer3, $question->answers3_correct) ?>">
           <?php echo htmlspecialchars($question->answers3); ?>
         </div>
       </div>
