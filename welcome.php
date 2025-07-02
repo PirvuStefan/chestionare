@@ -4,6 +4,9 @@
 session_start();
 include('connection.php');
 
+$start_time = date('Y-m-d H:i:s');;
+$_SESSION['quiz_start_time'] = $start_time; 
+
 function initialise_user($coockie_now){
     global $conn;
     $sql = "SELECT user_id FROM remember_tokens_web WHERE token = ?";

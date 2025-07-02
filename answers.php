@@ -139,6 +139,8 @@ if ($chestionar === null) {
     exit();
 }
 
+$userID = $_SESSION['userID'] ?? null;
+
 function test(){
 for($i = 0; $i < 10; $i++){
 
@@ -170,6 +172,24 @@ function valid($a,$b,$c,$x,$y,$z){
 }
 
 $count = 0;
+
+function write($USER_ID, $answeared_correct, $answeared_incorrect, $start){
+
+  // scriem in  user_questionnaires   ( id este AUTO_INCREMENT, nu trebuie sa il setam si created_at este CURRENT_TIMESTAMP )
+  $end = date('Y-m-d H:i:s');
+  global $conn;
+  $sql = "INSERT INTO user_questionnaires (user_id, answered_correct, answered_incorrect, started_at, finished_at) 
+    VALUES ($USER_ID, $answeared_correct, $answeared_incorrect, '$start', '$end')";
+  mysqli_query($conn, $sql);
+
+
+
+}
+
+if (!isset($_SESSION['results_written'])) {
+  write($userID, $count, 10 - $count, $_SESSION['quiz_start_time']);
+  $_SESSION['results_written'] = true;
+}
 
 
 
@@ -336,7 +356,7 @@ $count = 0;
 </head>
 <body>
   <div class="container">
-    <h1>Rezultate Chestionar #<?php  echo " "; echo $count  ?></h1>
+    <h1>Rezultate Chestionar</h1>
     
     <?php for ($i = 0; $i < count($chestionar->questions); $i++): ?>
       <?php 
@@ -347,17 +367,17 @@ $count = 0;
       <div class="question">
         <p><?php echo $question_num; ?>. <?php echo htmlspecialchars($question->description); ?></p>
         
-        <!-- Answer 1 -->
+        <!-- Raspuns 1 -->
         <div class="answer-option <?php echo check($raspuns[$i]->answer1, $question->answers1_correct) ?>">
           <?php echo htmlspecialchars($question->answers1); ?>
         </div>
         
-        <!-- Answer 2 -->
+        <!-- Raspuns 2 -->
         <div class="answer-option <?php echo check($raspuns[$i]->answer2, $question->answers2_correct) ?>">
           <?php echo htmlspecialchars($question->answers2); ?>
         </div>
         
-        <!-- Answer 3 -->
+        <!-- Raspuns 3 -->
         <div class="answer-option <?php echo check($raspuns[$i]->answer3, $question->answers3_correct) ?>">
           <?php echo htmlspecialchars($question->answers3); ?>
         </div>
