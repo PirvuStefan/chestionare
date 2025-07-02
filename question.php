@@ -115,8 +115,51 @@ class Question {
     }
 }// firecare intrebare are un id, o descriere si 3 raspunsuri, fiecare cu un camp de corectitudine
 
-$chestionar = initialise_questionnaire();
 
+class Answers {
+
+    public bool $answer1, $answer2, $answer3;
+    public function __construct(bool $answer1, bool $answer2, bool $answer3) {
+        $this->answer1 = $answer1;
+        $this->answer2 = $answer2;
+        $this->answer3 = $answer3;
+    }
+}
+
+$raspunsuri = [];
+
+// Process submitted answers
+if (isset($_POST['user_answers'])) {
+    $user_answers = json_decode($_POST['user_answers'], true);
+    
+    // Initialize $raspunsuri with 10 Answers objects
+    for ($i = 0; $i < 10; $i++) {
+        $question_num = $i + 1;
+        $user_question_answers = $user_answers["q$question_num"] ?? [];
+        
+        // Check if each answer was selected
+        $answer1_selected = in_array("q{$question_num}a", $user_question_answers);
+        $answer2_selected = in_array("q{$question_num}b", $user_question_answers);
+        $answer3_selected = in_array("q{$question_num}c", $user_question_answers);
+        
+        // Create Answers object with true/false values
+        $raspunsuri[$i] = new Answers($answer1_selected, $answer2_selected, $answer3_selected);
+    }
+    
+    // Store in session for use in other pages
+    $_SESSION['raspunsuri'] = $raspunsuri;
+    
+    // Redirect to answers page
+    header('Location: answers.php');
+    exit();
+} else {
+    // Initialize empty $raspunsuri for first load
+    for ($i = 0; $i < 10; $i++) {
+        $raspunsuri[$i] = new Answers(false, false, false);
+    }
+}
+
+$chestionar = initialise_questionnaire();
 $_SESSION['chestionar'] = $chestionar;
 
 ?>
@@ -339,38 +382,49 @@ $_SESSION['chestionar'] = $chestionar;
   </div>
 
   <script>
-    const form = document.getElementById('quizForm');
-    const progress = document.getElementById('progress');
-    const totalQuestions = 10;
+  const form = document.getElementById('quizForm');
+  const progress = document.getElementById('progress');
+  const totalQuestions = 10;
 
-    function updateProgress() {
-      let answered = 0;
-      for (let i = 1; i <= totalQuestions; i++) {
-        const checkboxes = form.querySelectorAll(`input[name="q${i}"]`);
-        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
-        if (anyChecked) answered++;
-      }
-      progress.style.width = (answered / totalQuestions * 100) + '%';
+  function updateProgress() {
+    let answered = 0;
+    for (let i = 1; i <= totalQuestions; i++) {
+      const checkboxes = form.querySelectorAll(`input[name="q${i}"]`);
+      const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+      if (anyChecked) answered++;
     }
+    progress.style.width = (answered / totalQuestions * 100) + '%';
+  }
 
-    form.addEventListener('change', updateProgress);
+  form.addEventListener('change', updateProgress);
 
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const answers = {};
-      for (let i = 1; i <= totalQuestions; i++) {
-        const selected = Array.from(form.querySelectorAll(`input[name="q${i}"]:checked`)).map(cb => cb.value);
-        if (selected.length === 0) {
-          alert(`Please answer question ${i}.`);
-          return;
-        }
-        answers[`q${i}`] = selected;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const answers = {};
+    
+    for (let i = 1; i <= totalQuestions; i++) {
+      const selected = Array.from(form.querySelectorAll(`input[name="q${i}"]:checked`)).map(cb => cb.id);
+      if (selected.length === 0) {
+        alert(`Please answer question ${i}.`);
+        return;
       }
-      localStorage.setItem('multiChoiceAnswers', JSON.stringify(answers));
-      alert("Your answers were saved successfully!");
-      form.reset();
-      updateProgress();
-    });
-  </script>
+      answers[`q${i}`] = selected;
+    }
+    
+    // Create a hidden form to submit answers to the same page
+    const hiddenForm = document.createElement('form');
+    hiddenForm.method = 'POST';
+    hiddenForm.action = 'question.php';
+    
+    const answersInput = document.createElement('input');
+    answersInput.type = 'hidden';
+    answersInput.name = 'user_answers';
+    answersInput.value = JSON.stringify(answers);
+    
+    hiddenForm.appendChild(answersInput);
+    document.body.appendChild(hiddenForm);
+    hiddenForm.submit();
+  });
+</script>
 </body>
 </html>
