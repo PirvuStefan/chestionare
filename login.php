@@ -56,7 +56,7 @@ if(isset($_POST['submit'])){
         
         $login_successful = false;
         
-        if(!str_starts_with($row['password'], '$2y$')) {
+      /*  if(!str_starts_with($row['password'], '$2y$')) {
             // Plain text password
             if($password === $row['password']) {
                 $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
@@ -66,12 +66,12 @@ if(isset($_POST['submit'])){
                 $updateStmt->close();
                 $login_successful = true;
             }
-        } else {
+        }*/ 
             // Hashed password
             if(password_verify($password, $row['password'])) {
                 $login_successful = true;
             }
-        }
+        
         
         if($login_successful) {
             $_SESSION['userID'] = $userID;

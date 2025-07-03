@@ -87,7 +87,7 @@ $name = get_name($userID);
         <div class="bg"></div>
         <div class="blob"></div>
         <div class="card-content">
-            <div class="modern-text"><?php echo $chestionare_completate ?? 0; ?></div>
+            <div class="modern-text23"><?php echo $chestionare_completate ?? 0; ?></div>
             <style>
                 .modern-text1 {
                     font-family: 'Roboto', sans-serif;

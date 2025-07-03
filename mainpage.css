@@ -71,7 +71,18 @@
     line-height: 1.6; /* Good spacing for readability */
     font-weight: 400; /* Normal weight for clarity */
     letter-spacing: 0.5px; /* Slight spacing for modern feel */
-    margin: -15px 0 1rem -150px; /* Top and left spacing for moving text down and to the left */
+    margin: -15px 10 1rem -150px; /* Top and left spacing for moving text down and to the left */
+    
+}
+
+.modern-text23 {
+    color: #c48431; /* Black text */
+    font-family: Roboto; /* Modern, readable fonts */
+    font-size: 2.5rem; /* Base readable size */
+    line-height: 1.6; /* Good spacing for readability */
+    font-weight: 400; /* Normal weight for clarity */
+    letter-spacing: 0.5px; /* Slight spacing for modern feel */
+    margin: -15px 10 1rem -150px; /* Top and left spacing for moving text down and to the left */
     
 }
 
