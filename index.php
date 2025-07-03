@@ -1,7 +1,7 @@
 <?php
     include('connection.php');
 
-    
+    session_start();
 
 ?>
 
@@ -16,6 +16,25 @@
     <link rel="stylesheet" href="css.css">
 </head>
 <body>
+
+<style>
+.error-message {
+    background-color: rgba(220, 53, 69, 0.1);
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: 500;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
 
 <div class="container">
     <div class="heading">Bine ati venit!</div>
@@ -39,6 +58,17 @@
         />
         <input value="Conectare" name="submit" type="submit" class="login-button" />
     </form>
+
+    <?php
+
+    if (isset($_SESSION['login_error'])) {
+    echo '<div class="error-message">' . $_SESSION['login_error'] . '</div>';
+    unset($_SESSION['login_error']); // golim dupa afisare
+    }
+
+    
+
+    ?>
 
 
 </div>

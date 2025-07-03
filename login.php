@@ -82,10 +82,12 @@ if(isset($_POST['submit'])){
             exit();
         }
     }
+
+    $_SESSION['login_error'] = "Email sau parola incorecte!";
+    header("Location: index.php");
+    exit();
     
-    // Login failed
-    echo "<script>alert('Email sau parola incorecte!');</script>";
-    echo "<script>window.location.href='index.php';</script>";
+
     
     $stmt->close();
 }
