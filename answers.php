@@ -186,10 +186,7 @@ function write($USER_ID, $answeared_correct, $answeared_incorrect, $start){
 
 }
 
-if (!isset($_SESSION['results_written'])) {
-  write($userID, $count, 10 - $count, $_SESSION['quiz_start_time']);
-  $_SESSION['results_written'] = true;
-}
+
 
 
 
@@ -394,6 +391,11 @@ if (!isset($_SESSION['results_written'])) {
       <a href="reset.php" class="btn">Înapoi la Dashboard</a>
     </div>
   </div>
+
+  <?php if (!isset($_SESSION['results_written'])) {
+    write($userID, $count, 10 - $count, $_SESSION['quiz_start_time']);
+    $_SESSION['results_written'] = true;
+                                                  }   ?>  <!-- rulat ultimul dupa ce e calculat tot si rulam o singura data -->
   
 </body>
 </html>
