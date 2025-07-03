@@ -15,6 +15,26 @@ function initialise_user($coockie_now){
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
 
+    // Check if token is expired (30 days from created_at)
+    $sql_check = "SELECT created_at FROM remember_tokens_web WHERE token = ?";
+    $stmt_check = mysqli_prepare($conn, $sql_check);
+    mysqli_stmt_bind_param($stmt_check, "s", $coockie_now);
+    mysqli_stmt_execute($stmt_check);
+    $result_check = mysqli_stmt_get_result($stmt_check);
+    if ($row_check = mysqli_fetch_assoc($result_check)) {
+        $created_at = strtotime($row_check['created_at']);
+        $expiry = strtotime('+30 days', $created_at);
+        if (time() > $expiry) {
+            // Token expired - delete from database and unset cookie
+            $sql_delete = "DELETE FROM remember_tokens_web WHERE token = ?";
+            $stmt_delete = mysqli_prepare($conn, $sql_delete);
+            mysqli_stmt_bind_param($stmt_delete, "s", $coockie_now);
+            mysqli_stmt_execute($stmt_delete);
+            setcookie('remember_token', '', time() - 3600, '/');
+            return null;
+        }
+    }
+
     if ($row = mysqli_fetch_assoc($result)) {
         return $row['user_id'];
     }
