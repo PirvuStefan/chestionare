@@ -3,7 +3,8 @@
 
 session_start(); // Start the session
 include('connection.php'); // Include the database connection file
-$_SESSION['quiz_start_time'] = null; // Reset the quiz start time
+$start_time = date('Y-m-d H:i:s');;
+$_SESSION['quiz_start_time'] = $start_time; 
 $_SESSION['results_written'] = null; // Reset the results written flag
 $_SESSION['csrf_token'] = null; // Reset the CSRF token
 
