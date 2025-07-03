@@ -390,8 +390,8 @@ if (!isset($_SESSION['results_written'])) {
     <h3><?php if($count == 10) echo "Felicitari!Ai rezolvat perfect acest chestionar! ☺️"; ?> </h3>
 
     <div class="navigation-buttons">
-      <a href="question.php" class="btn secondary">Încearcă din nou</a>
-      <a href="welcome.php" class="btn">Înapoi la Dashboard</a>
+      <a href="reset2.php" class="btn secondary">Încearcă din nou</a>
+      <a href="reset.php" class="btn">Înapoi la Dashboard</a>
     </div>
   </div>
   
