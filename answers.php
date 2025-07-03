@@ -2,6 +2,12 @@
 session_start(); // Add this line
 include('connection.php');
 
+
+if(!$_SESSION['userID']) {
+    header("Location: index.php");
+    exit();
+}
+
 // Include the same classes and functions from question.php
 class Question {
     public int $id;

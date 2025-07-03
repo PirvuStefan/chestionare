@@ -4,6 +4,10 @@
 session_start();
 include('connection.php');
 
+if(!$_SESSION['userID']) {
+    header("Location: index.php");
+    exit();
+}
 
 
 
