@@ -4,7 +4,11 @@ include('connection.php');
 
 
 if(!$_SESSION['userID']) {
-    header("Location: index.php");
+    header("Location: welcome.php");
+    exit();
+}
+if(!isset($_SESSION['activ'])){
+    header("Location: welcome.php");
     exit();
 }
 

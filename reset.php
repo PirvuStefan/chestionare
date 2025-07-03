@@ -6,6 +6,7 @@ session_start(); // Start the session
 $_SESSION['quiz_start_time'] = null; // Reset the quiz start time
 $_SESSION['results_written'] = null; // Reset the results written flag
 $_SESSION['csrf_token'] = null; // Reset the CSRF token
+$_SESSION['activ'] = null; // Reset the active session flag
 
 
 header("Location: welcome.php"); // Redirect to the index page

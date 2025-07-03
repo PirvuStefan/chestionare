@@ -155,6 +155,7 @@ if (isset($_POST['user_answers'])) {
     
     // Store in session for use in other pages
     $_SESSION['raspunsuri'] = $raspunsuri;
+    $_SESSION['activ'] = true;
     
     // Redirect to answers page
     header('Location: answers.php');
