@@ -56,16 +56,23 @@ function get_name($userID) {
 
 
 
- $sql = "SELECT COUNT(*) as count FROM user_questionnaires WHERE user_id='$userID' AND (answered_correct + answered_incorrect) > 9";
- $result = mysqli_query($conn, $sql);
- $row = mysqli_fetch_assoc($result);
- $chestionare_completate = $row['count'] ?? 0; // in cazul in care nu exista chestionare, setam la 0
+// chestionare completate 
+$sql = "SELECT COUNT(*) as count FROM user_questionnaires WHERE user_id = ? AND (answered_correct + answered_incorrect) > 9";
+$stmt = mysqli_prepare($conn, $sql);
+mysqli_stmt_bind_param($stmt, "i", $userID);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$row = mysqli_fetch_assoc($result);
+$chestionare_completate = $row['count'] ?? 0;
 
-
- $sql1 = "SELECT COUNT(*) as count FROM user_questionnaires WHERE user_id='$userID' AND answered_correct = 10";
-$result1 = mysqli_query($conn, $sql1);
+// chestionare perfecte
+$sql1 = "SELECT COUNT(*) as count FROM user_questionnaires WHERE user_id = ? AND answered_correct = 10";
+$stmt1 = mysqli_prepare($conn, $sql1);
+mysqli_stmt_bind_param($stmt1, "i", $userID);
+mysqli_stmt_execute($stmt1);
+$result1 = mysqli_stmt_get_result($stmt1);
 $row1 = mysqli_fetch_assoc($result1);
-$chestionare_perfecte = $row1['count'] ?? 0; // in cazul in care nu exista chestionare perfecte, setam la 0
+$chestionare_perfecte = $row1['count'] ?? 0;
 
 $name = get_name($userID);
 

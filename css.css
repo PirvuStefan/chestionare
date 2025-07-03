@@ -166,8 +166,12 @@ body {
 .agreement1 {
     display: block;
     text-align: center;
-    margin-top: 10px;
-    font-size: 14px;
-    color: #333333; /* Blackish color */
-    font-weight: 400; /* Professional and modern look */
+    margin-top: 15px;
+    font-size: 12px;
+    color: rgb(170, 170, 170); /* Lighter gray for modern look */
+    font-weight: 400;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.5); /* Subtle background */
+    box-shadow: rgba(133, 189, 215, 0.1) 0px 5px 10px -5px;
 }
