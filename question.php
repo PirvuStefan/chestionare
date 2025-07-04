@@ -385,6 +385,7 @@ $_SESSION['chestionar'] = $chestionar;
         <label for="q10c"><?php echo $chestionar->questions[9]->answers3 ?></label>
       </div>
 
+      <div id="error-message" style="display: none; color: #ff4757; background: rgba(255, 71, 87, 0.1); border: 1px solid #ff4757; border-radius: 8px; padding: 10px; margin: 10px 0; text-align: center; font-weight: bold;"></div>
       <button type="submit">Submit</button>
     </form>
   </div>
@@ -392,6 +393,7 @@ $_SESSION['chestionar'] = $chestionar;
   <script>
   const form = document.getElementById('quizForm');
   const progress = document.getElementById('progress');
+  const errorMessage = document.getElementById('error-message');
   const totalQuestions = 10;
 
   function updateProgress() {
@@ -404,16 +406,31 @@ $_SESSION['chestionar'] = $chestionar;
     progress.style.width = (answered / totalQuestions * 100) + '%';
   }
 
-  form.addEventListener('change', updateProgress);
+  function showError(message) {
+    errorMessage.textContent = message;
+    errorMessage.style.display = 'block';
+    errorMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  function hideError() {
+    errorMessage.style.display = 'none';
+  }
+
+  form.addEventListener('change', function() {
+    updateProgress();
+    hideError(); // Hide error when user starts answering
+  });
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    hideError(); // Clear any previous errors
+    
     const answers = {};
     
     for (let i = 1; i <= totalQuestions; i++) {
       const selected = Array.from(form.querySelectorAll(`input[name="q${i}"]:checked`)).map(cb => cb.id);
       if (selected.length === 0) {
-        alert(`Please answer question ${i}.`);
+        showError(`Te rog raspunde la intrebarea ${i}.`);
         return;
       }
       answers[`q${i}`] = selected;
