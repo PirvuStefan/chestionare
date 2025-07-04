@@ -18,6 +18,7 @@
     align-items: center;
 
     width: 450px; /* Adjust the width here */
+    user-select: none;
 }
 
 body {
