@@ -3,6 +3,10 @@
     session_start();
 
     echo ".";
+    if(isset($_SESSION['userID'])) {
+        header("Location: welcome.php");
+        exit();
+    }
 ?>
 
 
