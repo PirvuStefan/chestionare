@@ -6,7 +6,7 @@
     if(isset($_SESSION['userID'])) {
         header("Location: welcome.php");
         exit();
-    }
+    } // daca userID este setat in sesiune, redirectionam la pagina welcome.php
 ?>
 
 
