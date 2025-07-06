@@ -59,8 +59,11 @@ $count = get_char_count($user_details['name']);
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Account Details</title>
+  <title>Detalii Cont</title>
     <link rel="stylesheet" href="account.css" />
+  <link rel="icon" type="image/png" href="logo_robest.png">
+  <link rel="shortcut icon" type="image/png" href="logo_robest.png">
+  <link rel="apple-touch-icon" href="logo_robest.png">
 </head>
 <body>
 

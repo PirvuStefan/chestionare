@@ -2,17 +2,40 @@
     include('connection.php');
     session_start();
 
-    echo ".";
-    if(isset($_SESSION['userID'])) {
-        header("Location: welcome.php");
-        exit();
+    // Check if user has valid cookie, not just session
+    if(isset($_SESSION['userID']) && isset($_COOKIE['remember_token'])) {
+        // Verify the cookie is still valid
+        $cookie_token = $_COOKIE['remember_token'];
+        $sql = "SELECT user_id, created_at FROM remember_tokens_web WHERE token = ?";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "s", $cookie_token);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        
+        if ($row = mysqli_fetch_assoc($result)) {
+            $created_at = strtotime($row['created_at']);
+            $expiry = strtotime('+30 days', $created_at);
+            if (time() <= $expiry) {
+                // Cookie is valid, redirect to welcome
+                header("Location: welcome.php");
+                die();
+            }
+        }
+        // If we reach here, cookie is invalid - clear session
+        unset($_SESSION['userID']);
     }
 ?>
 
 
+
+
+<?php echo "."  ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/png" href="logo_robest.png">
+    <link rel="shortcut icon" type="image/png" href="logo_robest.png">
+    <link rel="apple-touch-icon" href="logo_robest.png">
     <link rel="stylesheet" href="css.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">

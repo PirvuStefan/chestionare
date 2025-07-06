@@ -20,6 +20,9 @@ if($manual == null) {
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" type="image/png" href="logo_robest.png">
+  <link rel="shortcut icon" type="image/png" href="logo_robest.png">
+  <link rel="apple-touch-icon" href="logo_robest.png">
     <style>
         body {
             color: #ffffff;

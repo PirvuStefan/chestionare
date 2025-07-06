@@ -2,6 +2,9 @@
 session_start(); // Add this line
 include('connection.php');
 
+// Set UTF-8 encoding for database connection
+mysqli_set_charset($conn, "utf8");
+
 
 if(!$_SESSION['userID']) {
     header("Location: welcome.php");
@@ -60,70 +63,53 @@ class Answers {
 }
 
 function get_random_questionnaire() {
-    global $conn;
     
-    $count_query = "SELECT COUNT(DISTINCT user_questionnaire_id) as total FROM user_questionnaire_questions";
-    $count_result = mysqli_query($conn, $count_query);
-    
-    if (!$count_result) {
-        return null;
-    }
-    
-    $total = mysqli_fetch_assoc($count_result)['total'];
-    
-    if ($total == 0) {
-        return null;
-    }
-    
-    $random_offset = rand(0, $total - 1);
-    
-    $query = "SELECT DISTINCT user_questionnaire_id FROM user_questionnaire_questions LIMIT 1 OFFSET $random_offset";
-    $result = mysqli_query($conn, $query);
-    
-    if ($result && mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-        return $row['user_questionnaire_id'];
-    }
-    
-    return null;
+  return 2;
 }
 
-function initialise_questionnaire(){
+function initialise_questionnaire() {
+    global $conn;
     $questionnaire = new Questionnaire(get_random_questionnaire());
     
     if ($questionnaire->id === null) {
-        return null;
+        return null; // Return if invalid questionnaire
     }
     
-    global $conn;
-    $query = "SELECT question_id FROM user_questionnaire_questions WHERE user_questionnaire_id = {$questionnaire->id} LIMIT 10";
-    $result = mysqli_query($conn, $query);
+    for($i = 0; $i < 10; $i++) {
+        $question_id = rand(4, 136);
+        
+        $query = "SELECT description FROM questions WHERE id = ?";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "i", $question_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
 
-    if ($result) {
+        if ($row = mysqli_fetch_assoc($result)) {
+          $question = new Question($question_id);
+          $question->description = $row['description'];
+          
+        }
+
+
+        $query = "SELECT description, is_correct FROM question_answers WHERE question_id = ? ORDER BY question_id LIMIT 3";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "i", $question_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $answers = [];
         while ($row = mysqli_fetch_assoc($result)) {
-            $question = new Question($row['question_id']);
-            
-            $description_query = "SELECT description FROM questions WHERE id = {$question->id}";
-            $description_result = mysqli_query($conn, $description_query);
-            if ($description_result && $desc_row = mysqli_fetch_assoc($description_result)) {
-                $question->description = $desc_row['description'];
-            }
+          $answers[] = $row;
+        }
 
-            // Get answers and their correctness for the current question
-            $answers_query = "SELECT description, is_correct FROM questions_answers WHERE question_id = {$question->id} ORDER BY id LIMIT 3";
-            $answers_result = mysqli_query($conn, $answers_query);
-            if ($answers_result) {
-                $i = 1;
-                while ($answer_row = mysqli_fetch_assoc($answers_result)) {
-                    $answer_field = "answers" . $i;
-                    $correct_field = "answers" . $i . "_correct";
-                    $question->$answer_field = $answer_row['description'];
-                    $question->$correct_field = (bool)$answer_row['is_correct'];
-                    $i++;
-                }
-            }
-
-            $questionnaire->add_question($question);
+        if (count($answers) === 3) {
+          $question->answers1 = $answers[0]['description'];
+          $question->answers2 = $answers[1]['description']; 
+          $question->answers3 = $answers[2]['description'];
+          $question->answers1_correct = (bool)$answers[0]['is_correct'];
+          $question->answers2_correct = (bool)$answers[1]['is_correct'];
+          $question->answers3_correct = (bool)$answers[2]['is_correct'];
+          $questionnaire->add_question($question);
         }
     }
     
@@ -151,17 +137,7 @@ if ($chestionar === null) {
 
 $userID = $_SESSION['userID'] ?? null;
 
-function test(){
-for($i = 0; $i < 10; $i++){
 
-  echo $raspuns[$i]->answer1  ;
-  echo $raspuns[$i]->answer2  ;
-  echo $raspuns[$i]->answer3  ;
-  
-  echo "\
-  <br>";
-}
-}
 
 function check($check, $rasp){
   // check este ceea ce a fost selectat de utilizator, rasp este daca este corect sau nu
@@ -209,6 +185,9 @@ function write($USER_ID, $answeared_correct, $answeared_incorrect, $start){
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Rezultate Chestionar</title>
+  <link rel="icon" type="image/png" href="logo_robest.png">
+  <link rel="shortcut icon" type="image/png" href="logo_robest.png">
+  <link rel="apple-touch-icon" href="logo_robest.png">
   <style>
     :root {
       --glass-bg: rgba(0, 123, 255, 0.15);

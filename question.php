@@ -1,12 +1,67 @@
 <?php
 
+// Add these lines FIRST, before any other code
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 session_start();
 include('connection.php');
 
-if(!$_SESSION['userID']) {
-    header("Location: index.php");
-    exit();
+// Set UTF-8 encoding for database connection
+mysqli_set_charset($conn, "utf8");
+
+function initialise_user($cookie_token){
+    global $conn;
+    $sql = "SELECT user_id FROM remember_tokens_web WHERE token = ?";
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "s", $cookie_token);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+
+    // Check if token is expired (30 days from created_at)
+    $sql_check = "SELECT created_at FROM remember_tokens_web WHERE token = ?";
+    $stmt_check = mysqli_prepare($conn, $sql_check);
+    mysqli_stmt_bind_param($stmt_check, "s", $cookie_token);
+    mysqli_stmt_execute($stmt_check);
+    $result_check = mysqli_stmt_get_result($stmt_check);
+    if ($row_check = mysqli_fetch_assoc($result_check)) {
+        $created_at = strtotime($row_check['created_at']);
+        $expiry = strtotime('+30 days', $created_at);
+        if (time() > $expiry) {
+            // Token expired - delete from database and unset cookie
+            $sql_delete = "DELETE FROM remember_tokens_web WHERE token = ?";
+            $stmt_delete = mysqli_prepare($conn, $sql_delete);
+            mysqli_stmt_bind_param($stmt_delete, "s", $cookie_token);
+            mysqli_stmt_execute($stmt_delete);
+            setcookie('remember_token', '', time() - 3600, '/');
+            return null;
+        }
+    }
+
+    if ($row = mysqli_fetch_assoc($result)) {
+        return $row['user_id'];
+    }
+    return null;
+}
+
+// Check session first, then fall back to cookie
+$userID = $_SESSION['userID'] ?? null;
+
+if (!$userID) {
+    $cookie_token = $_COOKIE['remember_token'] ?? null;
+    if (!$cookie_token) {
+        header("Location: index.php");
+        exit();
+    }
+
+    $userID = initialise_user($cookie_token);
+    if (!$userID) {
+        header("Location: index.php");
+        exit();
+    }
+    
+    $_SESSION['userID'] = $userID;
 }
 
 
@@ -14,6 +69,8 @@ if(!$_SESSION['userID']) {
 
 function get_random_questionnaire() {
     global $conn;
+
+    return 2;
     
    
     $count_query = "SELECT COUNT(DISTINCT user_questionnaire_id) as total FROM user_questionnaire_questions";
@@ -45,49 +102,53 @@ function get_random_questionnaire() {
     return null;
 }
 
-function initialise_questionnaire(){
-  
-  $questionnaire = new Questionnaire(get_random_questionnaire());
-  
-  if ($questionnaire->id === null) {
-      return null; // gol
-  }
-  global $conn;
-  // Get all question IDs for the selected questionnaire
-  $query = "SELECT question_id FROM user_questionnaire_questions WHERE user_questionnaire_id = {$questionnaire->id} LIMIT 10";
-  $result = mysqli_query($conn, $query);
-
-
-
-  if ($result) {
-    while ($row = mysqli_fetch_assoc($result)) {
-      $question = new Question($row['question_id']);
-      
-      $description_query = "SELECT description FROM questions WHERE id = {$question->id}";
-      $description_result = mysqli_query($conn, $description_query);
-      if ($description_result && $row = mysqli_fetch_assoc($description_result)) {
-        $question->description = $row['description'];
-      }
-
-      // Get answers and their correctness for the current question
-      $answers_query = "SELECT description, is_correct FROM questions_answers WHERE question_id = {$question->id} ORDER BY id LIMIT 3";
-      $answers_result = mysqli_query($conn, $answers_query);
-      if ($answers_result) {
-        $i = 1;
-        while ($answer_row = mysqli_fetch_assoc($answers_result)) {
-          $answer_field = "answers" . $i;
-          $correct_field = "answers" . $i . "_correct";
-          $question->$answer_field = $answer_row['description'];
-          $question->$correct_field = (bool)$answer_row['is_correct'];
-          $i++;
-        }
-      }
-
-      $questionnaire->add_question($question);
+function initialise_questionnaire() {
+    global $conn;
+    $questionnaire = new Questionnaire(get_random_questionnaire());
+    
+    if ($questionnaire->id === null) {
+        return null; // Return if invalid questionnaire
     }
-  }
-  
-  return $questionnaire;
+    
+    for($i = 0; $i < 10; $i++) {
+        $question_id = rand(4, 136);
+        
+        $query = "SELECT description FROM questions WHERE id = ?";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "i", $question_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        if ($row = mysqli_fetch_assoc($result)) {
+          $question = new Question($question_id);
+          $question->description = $row['description'];
+          
+        }
+
+
+        $query = "SELECT description, is_correct FROM question_answers WHERE question_id = ? ORDER BY question_id LIMIT 3";
+        $stmt = mysqli_prepare($conn, $query);
+        mysqli_stmt_bind_param($stmt, "i", $question_id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+
+        $answers = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+          $answers[] = $row;
+        }
+
+        if (count($answers) === 3) {
+          $question->answers1 = $answers[0]['description'];
+          $question->answers2 = $answers[1]['description']; 
+          $question->answers3 = $answers[2]['description'];
+          $question->answers1_correct = (bool)$answers[0]['is_correct'];
+          $question->answers2_correct = (bool)$answers[1]['is_correct'];
+          $question->answers3_correct = (bool)$answers[2]['is_correct'];
+          $questionnaire->add_question($question);
+        }
+    }
+    
+    return $questionnaire;
 }
 
 
@@ -170,6 +231,13 @@ if (isset($_POST['user_answers'])) {
 $chestionar = initialise_questionnaire();
 $_SESSION['chestionar'] = $chestionar;
 
+// Ensure no debug output or answer visibility during quiz
+if (!isset($_POST['user_answers'])) {
+    // Clear any previous session data that might show answers
+    unset($_SESSION['raspunsuri']);
+    unset($_SESSION['activ']);
+}
+
 ?>
 
 
@@ -178,6 +246,9 @@ $_SESSION['chestionar'] = $chestionar;
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" type="image/png" href="logo_robest.png">
+  <link rel="shortcut icon" type="image/png" href="logo_robest.png">
+  <link rel="apple-touch-icon" href="logo_robest.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chestionar</title>
@@ -275,24 +346,37 @@ $_SESSION['chestionar'] = $chestionar;
     button:hover {
       background:rgb(24, 204, 0);
     }
+    
+    /* Hide any potential debug or answer information */
+    .debug-info, .correct-answer, .answer-key {
+      display: none !important;
+    }
+    
+    /* Prevent text selection of question/answer content to avoid cheating */
+    .question p, .question label {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Chestionar #<?php echo $chestionar->id ?></h1>
+    <h1>Chestionar</h1>
     <div class="progress-bar">
       <div class="progress-bar-inner" id="progress"></div>
     </div>
     <form id="quizForm">
       <!-- Example of one question block -->
       <div class="question">
-        <p>1. <?php echo $chestionar->questions[0]->description; ?></p>
+        <p>1. <?php echo htmlspecialchars($chestionar->questions[0]->description); ?></p>
         <input type="checkbox" id="q1a" name="q1" value="Red" hidden>
-        <label for="q1a"><?php echo $chestionar->questions[0]->answers1 ?></label>
+        <label for="q1a"><?php echo htmlspecialchars($chestionar->questions[0]->answers1); ?></label>
         <input type="checkbox" id="q1b" name="q1" value="Blue" hidden>
-        <label for="q1b"><?php echo $chestionar->questions[0]->answers2 ?></label>
+        <label for="q1b"><?php echo htmlspecialchars($chestionar->questions[0]->answers2); ?></label>
         <input type="checkbox" id="q1c" name="q1" value="Green" hidden>
-        <label for="q1c"><?php echo $chestionar->questions[0]->answers3 ?></label>
+        <label for="q1c"><?php echo htmlspecialchars($chestionar->questions[0]->answers3); ?></label>
       </div>
 
       <div class="question">
@@ -322,7 +406,7 @@ $_SESSION['chestionar'] = $chestionar;
         <input type="checkbox" id="q4b" name="q4" value="Rock" hidden>
         <label for="q4b"><?php echo $chestionar->questions[3]->answers2 ?></label>
         <input type="checkbox" id="q4c" name="q4" value="Jazz" hidden>
-        <label for="q4c"><?php echo $chestionar->questions[3]->answers2 ?></label>
+        <label for="q4c"><?php echo $chestionar->questions[3]->answers3 ?></label>
       </div>
 
       <div class="question">
@@ -450,6 +534,21 @@ $_SESSION['chestionar'] = $chestionar;
     document.body.appendChild(hiddenForm);
     hiddenForm.submit();
   });
+ 
+  // Disable right-click context menu to prevent inspect element
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+  });
+
+  // Disable F12, Ctrl+Shift+I, Ctrl+U
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+        (e.ctrlKey && e.key === 'u')) {
+      e.preventDefault();
+    }
+  });
 </script>
+
 </body>
 </html>
